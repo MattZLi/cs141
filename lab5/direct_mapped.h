@@ -11,7 +11,10 @@ typedef struct direct_mapped_cache
 {
     main_memory* mm;
     cache_stats cs;
-    
+    memory_block* set_array[DIRECT_MAPPED_NUM_SETS];
+
+    // if int is 1, dirty and needs to be rewritten
+    int dirty[DIRECT_MAPPED_NUM_SETS];
     // TODO: add anything you need
 } direct_mapped_cache;
 
