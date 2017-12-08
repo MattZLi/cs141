@@ -47,30 +47,29 @@ void dmc_store_word(direct_mapped_cache* dmc, void* addr, unsigned int val)
     size_t addr_offt = (size_t) (addr - MAIN_MEMORY_START_ADDR) % MAIN_MEMORY_BLOCK_SIZE;
     void* mb_start_addr = addr - addr_offt;
 
+    //
 
-    // check if we miss and must load in from main mem
-    if dmc->set_array[set_num] == NULL {
-
-        dmc->set_array[set_num] = mm_read(dmc->mm, mb_start_addr);
-
-    }
 
     // Load memory block from main memory
     memory_block* mb = mm_read(sc->mm, mb_start_addr);
 
     // Update relevant word in memory block
-    unsigned int* mb_addr = mb->data + addr_offt;
+    unsigned int* mb_addr = dmc->set_array[set_num]-> + addr_offt;
     *mb_addr = val;
 
-    // Story memory block back into main memory
+    // set as dirty
+    dmc->dirty[set_num] = 1;
+
+    // Store memory block back into main memory
     mm_write(sc->mm, mb_start_addr, mb);
 
     // Update statistics
-    ++sc->cs.w_queries;
-    ++sc->cs.w_misses;
+    //++sc->cs.w_queries;
+    //++sc->cs.w_misses;
+    ++dmc->cs.w_queries;
 
     // Free memory block
-    mb_free(mb);
+    //mb_free(mb);
 
     // simple end
 }
@@ -83,6 +82,15 @@ unsigned int dmc_load_word(direct_mapped_cache* dmc, void* addr)
     // Precompute start address of memory block
     size_t addr_offt = (size_t) (addr - MAIN_MEMORY_START_ADDR) % MAIN_MEMORY_BLOCK_SIZE;
     void* mb_start_addr = addr - addr_offt;
+
+    // check if compulsory miss and must load in from main mem
+    if dmc->set_array[set_num] == NULL {
+
+        dmc->set_array[set_num] = mm_read(dmc->mm, mb_start_addr);
+
+        // need to increment misses
+
+    }
 
     // Load memory block from main memory
     memory_block* mb = mm_read(sc->mm, mb_start_addr);
@@ -101,18 +109,13 @@ unsigned int dmc_load_word(direct_mapped_cache* dmc, void* addr)
     // Return result
     return result;
 
-    // simple end
-
-    return 0;
 }
 
 void dmc_free(direct_mapped_cache* dmc)
 {
     // TODO
 
-    // simple start
-    free(sc);
-    // simple end
+    free(dmc);
 
 
 }
