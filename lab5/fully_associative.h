@@ -12,8 +12,6 @@ typedef struct fully_associative_cache
     main_memory* mm;
     cache_stats cs;
 
-    // TODO: add anything you need
-
     // number of blocks = number of ways
     memory_block* ways[FULLY_ASSOCIATIVE_NUM_WAYS];
 

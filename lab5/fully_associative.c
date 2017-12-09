@@ -11,7 +11,7 @@ fully_associative_cache* fac_init(main_memory* mm)
 
     for (int i = 0; i < FULLY_ASSOCIATIVE_NUM_WAYS; i++)
     {
-        //making an array of size numsets
+        //making an array of size num ways
         result->valid[i] = 0;
         result->dirty[i] = 0;
         result->use[i] = i;
@@ -20,8 +20,7 @@ fully_associative_cache* fac_init(main_memory* mm)
     return result;
 }
 
-// Optional
-
+// helper function to set most recently used
 static void mark_as_used(fully_associative_cache* fac, int way)
 {
     int temp = fac->use[way];
@@ -36,6 +35,7 @@ static void mark_as_used(fully_associative_cache* fac, int way)
     fac->use[way] = FULLY_ASSOCIATIVE_NUM_WAYS - 1;
 }
 
+// helper function to return least recently used
 static int lru(fully_associative_cache* fac)
 {
     int wayn;
@@ -53,7 +53,7 @@ static int lru(fully_associative_cache* fac)
 // global variables to track if address exists in cache
 int found = 0;
 int wayn = -1;
-
+// helper function to search for address in cache
 void find(fully_associative_cache* fac, void* mb_start_addr)
 {
     for (int i = 0; i < FULLY_ASSOCIATIVE_NUM_WAYS; i++)
@@ -78,6 +78,7 @@ void fac_store_word(fully_associative_cache* fac, void* addr, unsigned int val)
     // first, check if any way already has the address
     find(fac, mb_start_addr);
 
+    // if we can't find it, we must evict lru
     if (!found)
     {
         wayn = lru(fac);
@@ -113,7 +114,7 @@ void fac_store_word(fully_associative_cache* fac, void* addr, unsigned int val)
     // increment write queries
     ++fac->cs.w_queries;
 
-    // reset found
+    // reset found bit
     found = 0;
     wayn = -1;
 }
@@ -130,6 +131,7 @@ unsigned int fac_load_word(fully_associative_cache* fac, void* addr)
     // first, check if any way already has the address
     find(fac, mb_start_addr);
 
+    // if we can't find it, we must evict lru
     if (!found)
     {
         wayn = lru(fac);

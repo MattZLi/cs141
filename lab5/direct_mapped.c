@@ -13,7 +13,7 @@ direct_mapped_cache* dmc_init(main_memory* mm)
 
     for (int i = 0; i < DIRECT_MAPPED_NUM_SETS; i++)
     {
-        //making an array of size numsets
+        //making an array of size num sets
         result->valid[i] = 0;
         result->dirty[i] = 0;
     }
@@ -21,8 +21,7 @@ direct_mapped_cache* dmc_init(main_memory* mm)
     return result;
 }
 
-// Optional
-
+// helper function to choose a set
 static int addr_to_set(void* addr)
 {
     return ((uintptr_t)addr >> MAIN_MEMORY_BLOCK_SIZE_LN) % (DIRECT_MAPPED_NUM_SETS);
@@ -31,7 +30,7 @@ static int addr_to_set(void* addr)
 
 void dmc_store_word(direct_mapped_cache* dmc, void* addr, unsigned int val)
 {
-    // Precompute start address of memory block, taken from simple.c
+    // Precompute start address of memory block
     size_t addr_offt = (size_t) (addr - MAIN_MEMORY_START_ADDR) % MAIN_MEMORY_BLOCK_SIZE;
     void* mb_start_addr = addr - addr_offt;
 
