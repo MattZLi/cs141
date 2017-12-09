@@ -11,8 +11,20 @@ typedef struct fully_associative_cache
 {
     main_memory* mm;
     cache_stats cs;
-    
+
     // TODO: add anything you need
+
+    // number of blocks = number of ways
+    memory_block* ways[FULLY_ASSOCIATIVE_NUM_WAYS];
+
+    // if valid is 1, block holds meaningful data
+    int valid[FULLY_ASSOCIATIVE_NUM_WAYS];
+
+    // if dirty is 1, cache block doesnt match main memory block
+    int dirty[FULLY_ASSOCIATIVE_NUM_WAYS];
+
+    int use[FULLY_ASSOCIATIVE_NUM_WAYS];
+
 } fully_associative_cache;
 
 // Do not edit below this line

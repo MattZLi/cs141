@@ -13,8 +13,18 @@ typedef struct set_associative_cache
 {
     main_memory* mm;
     cache_stats cs;
-    
-    // TODO: add anything you need
+
+    // number of blocks = number of sets * number of ways
+    memory_block* blks[SET_ASSOCIATIVE_NUM_SETS][SET_ASSOCIATIVE_NUM_WAYS];
+
+    // if valid is 1, block holds meaningful data
+    int valid[SET_ASSOCIATIVE_NUM_SETS][SET_ASSOCIATIVE_NUM_WAYS];
+
+    // if dirty is 1, cache block doesnt match main memory block
+    int dirty[SET_ASSOCIATIVE_NUM_SETS][SET_ASSOCIATIVE_NUM_WAYS];
+
+    int use[SET_ASSOCIATIVE_NUM_SETS][SET_ASSOCIATIVE_NUM_WAYS];
+
 } set_associative_cache;
 
 // Do not edit below this line
