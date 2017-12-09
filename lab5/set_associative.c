@@ -175,9 +175,6 @@ unsigned int sac_load_word(set_associative_cache* sac, void* addr)
     // update lru
     mark_as_used(sac, setn, wayns);
 
-    // set as dirty
-    // sac->dirty[setn][wayns] = 1;
-
     // increment write queries
     ++sac->cs.r_queries;
 
